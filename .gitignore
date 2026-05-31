@@ -97,3 +97,9 @@ ReadMe.vscode.md
 src/config/resources/postgresql/server.crt
 extras/compose/postgres/ReadMe.md
 bun.lock
+src/config/resources/app.toml
+src/config/resources/tls/certificate.crt
+extras/compose/keycloak/ReadMe.md
+extras/compose/postgres/init/tls/server.crt
+extras/compose/prometheus-grafana/grafana-datasources/datasource.yml
+extras/compose/keycloak/ReadMe.md

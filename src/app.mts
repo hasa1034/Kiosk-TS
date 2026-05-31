@@ -21,7 +21,7 @@ import { createMiddleware } from 'hono/factory';
 import { secureHeaders } from 'hono/secure-headers';
 import { type ZodError } from 'zod';
 import { router as healthRouter } from './admin/health-router.mts';
-import { graphqlApp } from './kiosk/graphql/graphql-app.mts'; // ANGEPASST
+// import { graphqlApp } from './kiosk/graphql/graphql-app.mts'; // ANGEPASST
 import { router } from './kiosk/router/kiosk-router.mts'; // ANGEPASST
 import { router as kioskWriteRouter } from './kiosk/router/kiosk-write-router.mts'; // ANGEPASST
 import {
@@ -91,7 +91,7 @@ app.route(paths.rest, kioskWriteRouter); // ANGEPASST
 app.route(paths.health, healthRouter);
 app.route(paths.auth, authRouter);
 // Yoga baut eine Hono-App mit Basispfad "/graphql"
-app.route('/', graphqlApp);
+// app.route('/', graphqlApp);
 app.route('/prometheus', prometheusRouter);
 
 const { NODE_ENV } = env;
@@ -123,7 +123,8 @@ app.onError((error, c) => {
         );
     }
 
-    if (error instanceof EmailExistsError) { // ANGEPASST
+    if (error instanceof EmailExistsError) {
+        // ANGEPASST
         return createProblemDetails(c, unprocessableContent, error.message);
     }
 

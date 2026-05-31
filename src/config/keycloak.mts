@@ -18,9 +18,11 @@
  * @packageDocumentation
  */
 
+import { readFile } from 'node:fs/promises';
 import { getLogger } from '../logger/logger.mts';
 import { config } from './app.mts';
 import { env } from './env.mts';
+import { resourcesURL } from './resources.mts';
 
 const logger = getLogger('config/keycloak', 'file');
 
@@ -68,6 +70,10 @@ const audience = ['account'];
 const accessTokenUrl = `${oidcUrl}/token`;
 
 const { CLIENT_SECRET, NODE_ENV } = env;
+const caCertificate = await readFile(
+    new URL('tls/certificate.crt', resourcesURL),
+    { encoding: 'utf8' },
+);
 
 export const keycloakConfig = {
     realm,
@@ -75,6 +81,7 @@ export const keycloakConfig = {
     jwksUri,
     clientId,
     audience,
+    caCertificate,
     // fuer KeycloakService
     accessTokenUrl,
     secret:
@@ -82,9 +89,18 @@ export const keycloakConfig = {
         'ERROR: Umgebungsvariable CLIENT_SECRET nicht gesetzt!',
 };
 
+const keycloakConfigLogBase = {
+    realm,
+    issuer,
+    jwksUri,
+    clientId,
+    audience,
+    accessTokenUrl,
+    secret: keycloakConfig.secret,
+};
 if (NODE_ENV === 'development') {
-    logger.debug('keycloakConfig = %o', keycloakConfig);
+    logger.debug('keycloakConfig = %o', keycloakConfigLogBase);
 } else {
-    const { secret, ...keycloakConfigLog } = keycloakConfig;
+    const { secret, ...keycloakConfigLog } = keycloakConfigLogBase;
     logger.debug('keycloakConfig = %o', keycloakConfigLog);
 }

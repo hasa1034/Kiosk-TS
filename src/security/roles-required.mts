@@ -19,7 +19,7 @@ import {
     InternalServerError,
     UnauthorizedError,
 } from './errors.mts';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createRemoteJWKSet, customFetch, jwtVerify } from 'jose';
 import { JOSEError } from 'jose/errors';
 import { getLogger } from '../logger/logger.mts';
 import { keycloakConfig } from '../config/keycloak.mts';
@@ -27,9 +27,24 @@ import { keycloakConfig } from '../config/keycloak.mts';
 const logger = getLogger('roles-required', 'file');
 
 type Rolle = 'admin' | 'user';
+type FetchInitWithTls = RequestInit & {
+    readonly tls: {
+        readonly ca: string;
+    };
+};
 
-const { issuer, jwksUri, clientId, audience } = keycloakConfig;
-const jwks = createRemoteJWKSet(new URL(jwksUri));
+const { issuer, jwksUri, clientId, audience, caCertificate } = keycloakConfig;
+const jwks = createRemoteJWKSet(new URL(jwksUri), {
+    [customFetch]: async (url, options) => {
+        const requestInit: FetchInitWithTls = {
+            ...options,
+            tls: {
+                ca: caCertificate,
+            },
+        };
+        return await fetch(url, requestInit);
+    },
+});
 
 // Token aus dem Request Header extrahieren
 const getToken = (req: HonoRequest) => {

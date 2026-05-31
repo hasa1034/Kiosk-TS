@@ -16,7 +16,9 @@ const adapter = new PrismaPg({
 
 const log: (Prisma.LogLevel | Prisma.LogDefinition)[] = [
     { emit: 'event', level: 'query' },
-    'info', 'warn', 'error',
+    'info',
+    'warn',
+    'error',
 ];
 
 const prisma = new PrismaClient({
@@ -84,7 +86,9 @@ try {
         });
         // eslint-disable-next-line require-atomic-updates
         message = styleText(['black', 'bgWhite'], 'Produkt aktualisiert:');
-        console.log(`${message} ID ${produktUpdated.id}, Neuer Preis: ${produktUpdated.preis.toString()}`);
+        console.log(
+            `${message} ID ${produktUpdated.id}, Neuer Preis: ${produktUpdated.preis.toString()}`,
+        );
 
         // 3. Löschen (Beispiel: Kiosk mit ID 99 löschen)
         // await tx.kiosk.delete({ where: { id: 99 } });

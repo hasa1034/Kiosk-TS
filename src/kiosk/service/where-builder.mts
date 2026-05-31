@@ -39,9 +39,7 @@ const logger = getLogger('buildWhere', 'func');
  */
 // "rest properties" ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
 // oxlint-disable-next-line max-lines-per-function
-export const buildWhere = ({
-    ...restProps
-}: Suchparameter) => {
+export const buildWhere = ({ ...restProps }: Suchparameter) => {
     logger.debug('build: restProps=%o', restProps);
 
     // Beispiel: { name: 'a', istGeoeffnet: true, geschlecht: 'MAENNLICH' }

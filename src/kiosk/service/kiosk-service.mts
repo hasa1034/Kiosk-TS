@@ -33,8 +33,6 @@ import { prismaClient } from '../../config/prisma-client.mts';
 type FindByIdParams = {
     // ID des gesuchten Kiosks
     readonly id: number;
-    /** Sollen die Produkte mitgeladen werden? */
-    readonly mitProdukten?: boolean;
 };
 
 export type KioskMitBetreiber = Prisma.KioskGetPayload<{
@@ -52,7 +50,7 @@ export type KioskMitBetreiberUndProdukt = Prisma.KioskGetPayload<{
 }>;
 
 // "preis" ist vom Prisma-internen Typ "Decimal"
-export type KioskMitBetreiberUndProduktDTO = Omit
+export type KioskMitBetreiberUndProduktDTO = Omit<
     KioskMitBetreiberUndProdukt,
     'produkt'
 > & {
@@ -97,7 +95,6 @@ export class KioskService {
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
     async findById({
         id,
-        mitProdukten,
     }: FindByIdParams): Promise<Readonly<KioskMitBetreiberUndProduktDTO>> {
         this.#logger.debug('findById: id=%d', id);
 
@@ -108,13 +105,10 @@ export class KioskService {
         // - keine Konfiguration fuer Eager- oder Lazy-Fetching
         // - keine Proxy-Objekte durch evtl. Lazy-Fetching
         // - keine DTO-Klassen mit weggelassenen nicht geladenen Properties
-        const include = mitProdukten
-            ? this.#includeBetreiberUndProdukt
-            : this.#includeBetreiber;
         const kiosk: KioskMitBetreiberUndProdukt | null =
             await prismaClient.kiosk.findUnique({
                 where: { id },
-                include,
+                include: this.#includeBetreiberUndProdukt,
             });
         if (kiosk === null) {
             this.#logger.debug('Es gibt keinen Kiosk mit der ID %d', id);
@@ -238,7 +232,8 @@ export class KioskService {
         // Ist jeder Suchparameter auch eine Property von Kiosk?
         let validKeys = true;
         keys.forEach((key) => {
-            if (!suchparameterNamen.includes(key) &&
+            if (
+                !suchparameterNamen.includes(key) &&
                 key !== 'javascript' &&
                 key !== 'typescript' &&
                 key !== 'java' &&

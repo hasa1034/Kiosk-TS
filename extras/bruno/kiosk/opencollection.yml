@@ -1,0 +1,67 @@
+opencollection: 1.0.0
+
+info:
+  name: kiosk
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: oauth2
+    flow: authorization_code
+    authorizationUrl: "{{oidcAuthUr}}"
+    accessTokenUrl: "{{oidcTokenUrl}}"
+    callbackUrl: https://localhost:3000
+    credentials:
+      clientId: javascript-client
+      clientSecret: PVi6lpHB32UDAyfSGTpFKFfX1q85fBm1
+      placement: body
+    pkce:
+      disabled: true
+    tokenConfig:
+      id: credentials
+      placement:
+        header: Bearer
+      source: access_token
+    settings:
+      autoFetchToken: true
+      autoRefreshToken: false
+  variables:
+    - name: baseUrl
+      value: https://localhost:3000
+    - name: keycloakUrl
+      value: https://localhost:8843
+    - name: realm
+      value: javascript
+    - name: realmUrl
+      value: "{{keycloakUrl}}/realms/{{realm}}"
+    - name: oidcUrl
+      value: "{{realmUrl}}/protocol/openid-connect"
+    - name: oidcAuthUrl
+      value: "{{oidcUrl}}/auth"
+    - name: oidcTokenUrl
+      value: "{{oidcUrl}}/token"
+    - name: authUrl
+      value: "{{baseUrl}}/auth"
+    - name: tokenUrl
+      value: "{{authUrl}}/token"
+    - name: keycloakUrl
+      value: http://localhost:8880
+      disabled: true
+    - name: oidcAuthUr
+      value: https://localhost:8843/realms/javascript/protocol/openid-connect/auth
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

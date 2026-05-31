@@ -169,22 +169,13 @@ export class KioskWriteService {
 
         const anzahl = await prismaClient.kiosk.count({ where: { email } });
         if (anzahl > 0) {
-            this.#logger.debug(
-                '#validateCreate: email existiert: %s',
-                email,
-            );
+            this.#logger.debug('#validateCreate: email existiert: %s', email);
             throw new EmailExistsError(email);
         }
         this.#logger.debug('#validateCreate: ok');
     }
 
-    static async #sendmail({
-        id,
-        name,
-    }: {
-        id: number | 'N/A';
-        name: string;
-    }) {
+    static async #sendmail({ id, name }: { id: number | 'N/A'; name: string }) {
         const subject = `Neuer Kiosk ${id}`;
         const body = `Der Kiosk mit dem Namen <strong>${name}</strong> ist angelegt`;
         await sendmail({ subject, body });

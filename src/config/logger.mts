@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { resolve } from 'node:path';
+import { mkdir } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import { styleText } from 'node:util';
 import pino from 'pino';
 import { type PrettyOptions } from 'pino-pretty';
@@ -44,6 +45,7 @@ const logDir: string | undefined =
 const logFile =
     logDir === undefined ? logFileDefault : resolve(logDir, logFileNameDefault);
 const pretty = log?.pretty === true;
+await mkdir(dirname(logFile), { recursive: true });
 
 // https://getpino.io
 // Log-Levels: fatal, error, warn, info, debug, trace

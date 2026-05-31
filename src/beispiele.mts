@@ -23,7 +23,9 @@ const adapter = new PrismaPg({
 
 const log: (Prisma.LogLevel | Prisma.LogDefinition)[] = [
     { emit: 'event', level: 'query' },
-    'info', 'warn', 'error',
+    'info',
+    'warn',
+    'error',
 ];
 
 const prisma = new PrismaClient({

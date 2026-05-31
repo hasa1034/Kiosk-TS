@@ -16,12 +16,17 @@
 import { getLogger } from '../logger/logger.mts';
 import { keycloakConfig } from '../config/keycloak.mts';
 
-const { accessTokenUrl, clientId, secret } = keycloakConfig;
+const { accessTokenUrl, caCertificate, clientId, secret } = keycloakConfig;
 const AUTHORIZATION = 'Authorization';
 const BASIC_AUTH = 'Basic';
 const CONTENT_TYPE = 'Content-Type';
 const X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded';
 const POST = 'POST';
+type FetchInitWithTls = RequestInit & {
+    readonly tls: {
+        readonly ca: string;
+    };
+};
 
 /** Typdefinition für Eingabedaten zu einem Token. */
 export type TokenData = {
@@ -63,11 +68,15 @@ export class KeycloakService {
         this.#logger.debug('token: body=%s', body);
         let response: Response;
         try {
-            response = await fetch(accessTokenUrl, {
+            const requestInit = {
                 method: POST,
                 body,
                 headers: this.#headers,
-            });
+                tls: {
+                    ca: caCertificate,
+                },
+            } satisfies FetchInitWithTls;
+            response = await fetch(accessTokenUrl, requestInit);
         } catch (err) {
             this.#logger.warn(
                 'Fehler beim Zugriff auf Keycloak: %o',
@@ -85,7 +94,10 @@ export class KeycloakService {
             return;
         }
 
-        const responseBody = await response.json();
+        const responseBody = (await response.json()) as Record<
+            string,
+            unknown
+        >;
         this.#logPayload(responseBody);
         this.#logger.debug('token: responseBody=%o', responseBody);
         return responseBody;

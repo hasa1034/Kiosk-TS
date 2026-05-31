@@ -16,16 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag juergenzimmermann/buch:2026.4.1-alpine -f Dockerfile.alpine .
+# Aufruf:   docker build --tag juergenzimmermann/kiosk:2026.4.1-alpine -f Dockerfile.alpine .
 #               ggf. --progress=plain
 #               ggf. --no-cache
 #
 #           Windows:   Get-Content Dockerfile.alpine | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
 #           macOS:     cat Dockerfile.alpine | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
 #
-#           docker debug juergenzimmermann/buch:2026.4.1-alpine
+#           docker debug juergenzimmermann/kioskk:2026.4.1-alpine
 #           docker network ls
-#           docker save juergenzimmermann/buch:2026.4.1-alpine > buch.tar
+#           docker save juergenzimmermann/kiosk:2026.4.1-alpine > kiosk.tar
 
 # https://docs.docker.com/engine/reference/builder/#syntax
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md

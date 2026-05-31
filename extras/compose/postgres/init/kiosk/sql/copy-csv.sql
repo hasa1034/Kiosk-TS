@@ -18,6 +18,6 @@
 SET search_path TO kiosk;
 
 -- https://www.postgresql.org/docs/current/sql-copy.html
-COPY produkt FROM '/init/kiosk/csv/produkt.csv' (FORMAT csv, DELIMITER ';', HEADER true);
 COPY kiosk FROM '/init/kiosk/csv/kiosk.csv' (FORMAT csv, DELIMITER ';', HEADER true);
 COPY betreiber FROM '/init/kiosk/csv/betreiber.csv' (FORMAT csv, DELIMITER ';', HEADER true);
+COPY produkt FROM '/init/kiosk/csv/produkt.csv' (FORMAT csv, DELIMITER ';', HEADER true);
