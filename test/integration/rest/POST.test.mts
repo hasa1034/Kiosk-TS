@@ -43,7 +43,7 @@ const neuerKiosk: KioskNeuType = {
         {
             vorname: 'Max',
             nachname: 'Mustermann',
-            geschlecht: 'MALE',
+            geschlecht: 'MAENNLICH',
         },
     ],
     produkt: [
@@ -65,7 +65,7 @@ const neuerKioskInvalid: Record<string, unknown> = {
 
 const neuerKioskEmailExistiert: KioskNeuType = {
     name: 'Kiosk Duplikat',
-    email: 'kiosk1@h-ka.de', // Eine E-Mail, die bereits durch deine Testdaten existiert
+    email: 'frank@acme.cn', // Eine E-Mail, die bereits durch deine Testdaten existiert
     istGeoeffnet: true,
     homepage: 'https://duplikat.de',
     username: 'admin',

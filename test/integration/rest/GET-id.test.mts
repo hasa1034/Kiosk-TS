@@ -14,7 +14,12 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { describe, expect, test } from 'vitest';
-import { ACCEPT, APPLICATION_JSON, restURL } from '../constants.mts';
+import {
+    ACCEPT,
+    APPLICATION_JSON,
+    IF_NONE_MATCH,
+    restURL,
+} from '../constants.mts';
 
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
@@ -38,11 +43,11 @@ describe('GET /rest/:id', () => {
         // then
         expect(response.status).toBe(200);
         expect(response.headers.get('Content-Type')).toContain(APPLICATION_JSON);
-        
+
         const body = await response.json();
         expect(body).toBeInstanceOf(Object);
         expect(body.id).toBe(Number.parseInt(idVorhanden, 10));
-        
+
         // Verfiziert die Kiosk-Struktur aus deinem Router
         expect(body.name).toBeDefined();
         expect(body.email).toBeDefined();
@@ -52,17 +57,18 @@ describe('GET /rest/:id', () => {
     test.concurrent('Kiosk nach ID suchen mit ETag (304 Not Modified)', async () => {
         // given
         const url = `${restURL}/${idVorhanden}`;
-        const initialResponse = await fetch(url);
-        const etag = initialResponse.headers.get('ETag');
-        expect(etag).toBeDefined();
+        const headers = new Headers();
+        headers.append(ACCEPT, APPLICATION_JSON);
+        headers.append(IF_NONE_MATCH, '"0"');
 
         // when
-        const response = await fetch(url, {
-            headers: { 'If-None-Match': etag! },
-        });
+        const response = await fetch(url, { headers });
 
         // then
         expect(response.status).toBe(304);
+
+        const body = await response.text();
+        expect(body).toBe('');
     });
 
     test.concurrent('Kiosk nach nicht-existenter ID suchen (404)', async () => {
@@ -81,7 +87,7 @@ describe('GET /rest/:id', () => {
         const url = `${restURL}/${idVorhanden}`;
         const headers = new Headers();
         // Router erlaubt laut Regex nur json oder html, XML fliegt raus
-        headers.append(ACCEPT, 'text/xml'); 
+        headers.append(ACCEPT, 'text/xml');
 
         // when
         const response = await fetch(url, { headers });

@@ -32,7 +32,7 @@ export class EmailExistsError extends Error {
     readonly email: string | undefined;
 
     constructor(email: string | undefined) {
-        super(`Die Email ${email} existiert bereits.`);
+        super(`Die email ${email} existiert bereits.`);
         this.email = email;
     }
 }
